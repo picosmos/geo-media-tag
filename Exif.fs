@@ -59,6 +59,24 @@ let private tryGetExifDate (image: MagickImage) =
             | Some result -> Some result
             | None -> tryTag ExifTag.DateTime
 
+let hasGpsData (path: string) =
+    try
+        use image = new MagickImage(path)
+        match image.GetExifProfile() with
+        | null -> false
+        | exif ->
+            let hasLatitude = 
+                match exif.GetValue(ExifTag.GPSLatitude) with
+                | null -> false
+                | _ -> true
+            let hasLongitude =
+                match exif.GetValue(ExifTag.GPSLongitude) with
+                | null -> false
+                | _ -> true
+            hasLatitude && hasLongitude
+    with
+    | _ -> false
+
 let tryGetCaptureTime (logger: ILogger) (path: string) =
     try
         use image = new MagickImage(path)

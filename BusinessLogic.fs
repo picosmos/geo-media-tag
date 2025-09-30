@@ -56,6 +56,9 @@ let private geotagFile (logger: ILogger) (trackPoints: GeoPoint list) (path: str
     if not (File.Exists path) then
         logger.LogWarning("Media file not found: {File}", path)
         None
+    elif hasGpsData path then
+        logger.LogInformation("Skipping {File} - already has GPS data, skipping it", path)
+        None
     else
         match tryGetCaptureTime logger path with
         | None ->
