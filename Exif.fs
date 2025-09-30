@@ -18,17 +18,8 @@ let private getSupportedFormats () =
 let isSupportedImage (path: string) =
     let extension = Path.GetExtension(path).ToLowerInvariant()
     let basicSupported = [ ".jpg"; ".jpeg"; ".tif"; ".tiff" ]
-    let potentiallySupported = [ ".heic" ]
     
-    if basicSupported |> List.contains extension then
-        true
-    elif potentiallySupported |> List.contains extension then
-        // Check if ImageMagick actually supports this format
-        let supportedFormats = getSupportedFormats()
-        let formatName = extension.TrimStart('.')
-        supportedFormats.Contains(formatName) || supportedFormats.Contains("heic")
-    else
-        false
+    basicSupported |> List.contains extension
 
 let private toRational (value: float) (denominator: uint32) =
     let numerator = Math.Round(value * float denominator) |> uint32
@@ -79,7 +70,6 @@ let tryGetCaptureTime (path: string) =
             Some(lastWrite)
     with
     | :? MagickCorruptImageErrorException as ex ->
-        // HEIC files may not be supported by this ImageMagick build
         eprintfn "Error reading image %s: %s" path ex.Message
         None
     | _ -> None
@@ -120,23 +110,8 @@ let updateImageMetadata (logger: ILogger) (path: string) (geoPoint: GeoPoint) =
 
         image.SetProfile(exifProfile)
         
-        // Handle HEIC files specially - convert to JPEG if writing back as HEIC fails
-        let extension = Path.GetExtension(path).ToLowerInvariant()
-        if extension = ".heic" then
-            try
-                // Try to write as HEIC first
-                image.Write(path)
-                logger.LogInformation("Geotagged {File} @ ({Latitude}, {Longitude})", path, geoPoint.Latitude, geoPoint.Longitude)
-            with
-            | :? MagickMissingDelegateErrorException ->
-                // Fall back to creating a JPEG version
-                let jpegPath = Path.ChangeExtension(path, ".jpg")
-                image.Format <- MagickFormat.Jpeg
-                image.Write(jpegPath)
-                logger.LogInformation("Geotagged {File} @ ({Latitude}, {Longitude}) - saved as {JpegFile}", path, geoPoint.Latitude, geoPoint.Longitude, jpegPath)
-        else
-            image.Write(path)
-            logger.LogInformation("Geotagged {File} @ ({Latitude}, {Longitude})", path, geoPoint.Latitude, geoPoint.Longitude)
+        image.Write(path)
+        logger.LogInformation("Geotagged {File} @ ({Latitude}, {Longitude})", path, geoPoint.Latitude, geoPoint.Longitude)
         
         true
     with 
