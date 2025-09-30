@@ -3,6 +3,7 @@
         "exif",
         "geotag",
         "Magick",
+        "picosmos",
         "trkpt"
     ]
 }

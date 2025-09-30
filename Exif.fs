@@ -1,11 +1,11 @@
-module ImageGeoTag.Exif
+module picosmos.geo.MediaTag.Exif
 
 open System
 open System.IO
 open System.Globalization
 open ImageMagick
 open Microsoft.Extensions.Logging
-open ImageGeoTag.Gpx
+open picosmos.geo.MediaTag.Gpx
 
 let private getSupportedFormats () =
     try
@@ -59,7 +59,7 @@ let private tryGetExifDate (image: MagickImage) =
             | Some result -> Some result
             | None -> tryTag ExifTag.DateTime
 
-let tryGetCaptureTime (path: string) =
+let tryGetCaptureTime (logger: ILogger) (path: string) =
     try
         use image = new MagickImage(path)
 
@@ -70,7 +70,7 @@ let tryGetCaptureTime (path: string) =
             Some(lastWrite)
     with
     | :? MagickCorruptImageErrorException as ex ->
-        eprintfn "Error reading image %s: %s" path ex.Message
+        logger.LogError("Image format not supported or corrupted: {File} - {Message}", path, ex.Message)
         None
     | _ -> None
 

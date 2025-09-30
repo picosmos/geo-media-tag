@@ -1,4 +1,4 @@
-﻿module ImageGeoTag.Program
+﻿module picosmos.geo.MediaTag.Program
 
 open System
 open System.IO
@@ -6,7 +6,7 @@ open System.CommandLine
 open System.CommandLine.Parsing
 open System.Threading.Tasks
 open Microsoft.Extensions.Logging
-open ImageGeoTag.BusinessLogic
+open picosmos.geo.MediaTag.BusinessLogic
 open System.Globalization
 open System.Threading
 
@@ -96,7 +96,7 @@ let main argv =
                             options.TimestampFormat <- "yyyy-MM-dd HH:mm:ss ")
                         |> ignore)
 
-            let logger = loggerFactory.CreateLogger("ImageGeoTag")
+            let logger = loggerFactory.CreateLogger("geo-media-tag")
             let command = buildRootCommand logger
             let parseResult = command.Parse(argv)
             return! parseResult.InvokeAsync()

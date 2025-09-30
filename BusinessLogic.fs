@@ -1,11 +1,11 @@
-module ImageGeoTag.BusinessLogic
+module picosmos.geo.MediaTag.BusinessLogic
 
 open System
 open System.IO
 open System.Threading.Tasks
 open Microsoft.Extensions.Logging
-open ImageGeoTag.Gpx
-open ImageGeoTag.Exif
+open picosmos.geo.MediaTag.Gpx
+open picosmos.geo.MediaTag.Exif
 
 type GeotagSummary =
     { Success: int
@@ -57,7 +57,7 @@ let private geotagFile (logger: ILogger) (trackPoints: GeoPoint list) (path: str
         logger.LogWarning("Media file not found: {File}", path)
         None
     else
-        match tryGetCaptureTime path with
+        match tryGetCaptureTime logger path with
         | None ->
             logger.LogWarning("No capture timestamp available for {File}. Skipping.", path)
             None

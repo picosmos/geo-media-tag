@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Debug/net6.0/ImageGeoTag.dll",
+            "program": "${workspaceFolder}/bin/Debug/net6.0/geo-media-tag.dll",
             "args": [
                 "--geo",
                 "./testdata/gpx/*.gpx",

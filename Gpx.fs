@@ -1,4 +1,4 @@
-module ImageGeoTag.Gpx
+module picosmos.geo.MediaTag.Gpx
 
 open System
 open System.Globalization
