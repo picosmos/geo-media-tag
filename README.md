@@ -88,7 +88,3 @@ dotnet run -- --geo ./tracks/day1.gpx --geo ./tracks/day2.gpx --media ./photos/
 - **Magick.NET:** Image processing and EXIF manipulation
 - **System.CommandLine:** CLI parsing
 - **Microsoft.Extensions.Logging:** Logging framework
-
-## To do
-
-- add support for heic and heif files, even though I only encountered missing geo tagging for images from Android phones, never from modern iOS devices.
